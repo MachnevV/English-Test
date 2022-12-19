@@ -1,36 +1,104 @@
-# i      я        люблю     работаю
-# you    ты       любишь    работаешь
-# we     мы       любим     работаем
-# they   они      любят     работают
-# he     он       любит     работает
-# she    она      любит     работает
+work_verb = {
+  "verb_root" => "работ", # бег, плав, куш, дум 
+  "pretext_variants" => {
+    "прошлое" => "",
+    "настоящее" => "",
+    "будущее" => {
+      "я" => "буду ",
+      "вы" => "будете ",
+      "мы" => "будем ",
+      "они" => "будут ",
+      "он" => "будет ",
+      "она" => "будет "
+    } 
+  },
+  "pronoun_variants" => {
+    "прошлое" => {
+      "я" => "ал",
+      "вы" => "али",
+      "мы" => "али",
+      "они" => "али",
+      "он" => "ал",
+      "она" => "ала"
+    },
+    "настоящее" => {
+      "я" => "аю",
+      "вы" => "аете",
+      "мы" => "аем",
+      "они" => "ают",
+      "он" => "ает",
+      "она" => "ает"
+    },
+    "будущее" => {
+      "я" => "ать",
+      "вы" => "ать",
+      "мы" => "ать",
+      "они" => "ать",
+      "он" => "ать",
+      "она" => "ать"
+    }
+  }
+}
 
+actions = ["вопрос", "утверждение", "отрицание"]
+time_of_actions = ["будущее", "настоящее", "прошлое"]
+pronouns = ["я", "вы", "мы", "они", "он", "она"]
+#others = ["лето", "солнце", "кошек", "собак", "небо"]  // пока не применяется. добавлю в версии 2
 
-#require_relative "dictionary"
-
-#puts "Генерация предложения на рус.языке. Версия 1:"
-#puts 
-
-pronouns = ["я", "ты", "мы", "они", "он", "она"]
-pronoun = pronouns[rand(6)]
-
-verbs = ["работать", "любить", "бегать", "плавать", "худеть", "прыгать"]
-verb = verbs[rand(6)]
-
-def sklonenie(pronoun, i, you, we, they, he, she)
-    if (pronoun == "я")
-        return i
-    elsif (pronoun == "ты")
-        return you
-    elsif (pronoun == "мы")
-        return we
-    elsif (pronoun == "они")
-        return they
-    elsif (pronoun == "он")
-        return he
-    elsif (pronoun == "она")
-        return she
-    end
+# метод для выбора случайного элемента из массива
+def get_random_element(elements)
+  elements.sample
 end
 
-puts pronoun + " " + sklonenie(pronoun, "буду", "будешь", "будем", "будут", "будет", "будет") + " " + verb    
+def get_sentence(verb, actions, time_of_actions, pronouns)
+  action = get_random_element(actions)
+  time_of_action = get_random_element(time_of_actions)
+  pronoun = get_random_element(pronouns)
+
+  puts "time_of_action: #{time_of_action}" + " / " + "action: #{action}"
+
+  case action
+  when "вопрос"
+    builded_verb = build_verb(verb, time_of_action, pronoun)
+    builded_pretext = build_pretext(verb, time_of_action, pronoun)
+    sentence_constructor(action, pronoun, builded_verb, builded_pretext)
+    
+  when "утверждение"
+    builded_verb = build_verb(verb, time_of_action, pronoun)
+    builded_pretext = build_pretext(verb, time_of_action, pronoun)
+    sentence_constructor(action, pronoun, builded_verb, builded_pretext)
+    
+  else
+    builded_verb = build_verb(verb, time_of_action, pronoun)
+    builded_pretext = build_pretext(verb, time_of_action, pronoun)
+    sentence_constructor(action, pronoun, builded_verb, builded_pretext)
+  end
+end
+
+# Метод собирает глагол с нужным окончанием
+def build_verb(verb, time_of_action, pronoun)
+  verb_root = verb["verb_root"]
+  verb_ending = verb["pronoun_variants"][time_of_action][pronoun]
+
+  verb_result = "#{verb_root}#{verb_ending}"
+end
+
+# Метод собирает предлог перед глаголом
+def build_pretext(verb, time_of_action, pronoun)
+  pretext_result = verb["pretext_variants"][time_of_action][pronoun]
+end
+
+# Метод собирает предложение целиком
+def sentence_constructor(action, pronoun, builded_verb, builded_pretext)
+  case action
+  when "вопрос"
+    puts "#{pronoun} #{builded_pretext}#{builded_verb} ?"
+  when "утверждение"
+    puts "#{pronoun} #{builded_pretext}#{builded_verb}"
+  else
+    puts "#{pronoun} не #{builded_pretext}#{builded_verb}"
+  end
+end
+
+# puts "Генерация предложения на рус.языке. Версия 1:"
+puts get_sentence(work_verb, actions, time_of_actions, pronouns)
